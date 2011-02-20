@@ -30,6 +30,10 @@ def build(bld):
   if sys.platform != 'darwin':
     bcryptnode.includes = """
       /usr/includes/bsd/
+      ../node/src/
+      ../node/deps/v8/include/
+      ../node/deps/libev/
+      ../node/deps/libeio/
     """
     bcryptnode.uselib = 'LIBBSD'
 
