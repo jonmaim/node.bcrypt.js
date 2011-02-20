@@ -1,4 +1,4 @@
-import Options, Utils
+import Options, Utils, sys
 from os import unlink, symlink, popen
 from os.path import exists, islink
 
@@ -15,7 +15,7 @@ def configure(conf):
   conf.check_tool("compiler_cc")
   conf.check_tool("node_addon")
 
-  if not conf.check(lib='bsd', libpath=['/usr/lib'], uselib_store='LIBBSD'):
+  if sys.platform != 'darwin' and not conf.check(lib='bsd', libpath=['/usr/lib'], uselib_store='LIBBSD'):
     conf.fatal("Cannot find bsd libraries (used for arc4random).")
 
 def build(bld):
@@ -26,14 +26,13 @@ def build(bld):
     src/bcrypt.cc
     src/bcrypt_node.cc
   """
-  bcryptnode.includes = """
-    /usr/includes/bsd/
-    ../node/src/
-    ../node/deps/v8/include/
-    ../node/deps/libev/
-    ../node/deps/libeio/
-  """
-  bcryptnode.uselib = 'LIBBSD'
+
+  if sys.platform != 'darwin':
+    bcryptnode.includes = """
+      /usr/includes/bsd/
+    """
+    bcryptnode.uselib = 'LIBBSD'
+
 def test(t):
   Utils.exec_command('nodeunit test')
 
@@ -41,6 +40,6 @@ def shutdown():
   t = 'bcrypt_lib.node'
   if Options.commands['clean']:
     if exists(t): unlink(t)
-  else:
+  if Options.commands['build']:
     if exists('build/default/' + t) and not exists(t):
       symlink('build/default/' + t, t)
