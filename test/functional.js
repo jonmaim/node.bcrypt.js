@@ -1,5 +1,7 @@
+require.paths.unshift('../../lib');
+
 var testCase = require('nodeunit').testCase,
-    bcrypt = require('../bcrypt');
+    bcrypt = require('bcrypt');
 
 module.exports = testCase({
     test_salt_length: function(assert) {
