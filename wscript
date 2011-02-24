@@ -35,6 +35,14 @@ def build(bld):
       ../node/deps/libev/
       ../node/deps/libeio/
     """
+  else:
+    bcryptnode.includes = """
+      ../node/src/
+      ../node/deps/v8/include/
+      ../node/deps/libev/
+      ../node/deps/libeio/
+    """
+
     bcryptnode.uselib = 'LIBBSD'
 
 def test(t):
